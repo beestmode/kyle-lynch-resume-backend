@@ -47,14 +47,16 @@ class ResumeDatabase:
     @staticmethod
     async def update_personal_info(personal_info: dict) -> bool:
         """Update personal information"""
+        # Create update fields with dot notation to merge instead of replace
+        update_fields = {}
+        for key, value in personal_info.items():
+            update_fields[f"personal_info.{key}"] = value
+        
+        update_fields["updated_at"] = datetime.utcnow()
+        
         result = await resumes_collection.update_one(
             {"active": True},
-            {
-                "$set": {
-                    "personal_info": personal_info,
-                    "updated_at": datetime.utcnow()
-                }
-            }
+            {"$set": update_fields}
         )
         return result.modified_count > 0
     
