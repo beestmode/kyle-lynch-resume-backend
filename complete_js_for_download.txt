@@ -1,0 +1,12 @@
+COMPLETE JAVASCRIPT FILE FOR DREAMHOST UPLOAD
+
+File: main.08e1dd48.js
+Size: 360,505 bytes
+Status: Fresh build, uncorrupted
+
+Instructions:
+1. Copy ALL content below this line (everything after "=== FILE CONTENT STARTS BELOW ===")
+2. Save as "main.08e1dd48.js" on your computer
+3. Upload to DreamHost: static/js/main.08e1dd48.js
+
+=== FILE CONTENT STARTS BELOW ===
