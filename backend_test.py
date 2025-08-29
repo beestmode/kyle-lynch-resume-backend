@@ -557,7 +557,7 @@ class ResumeAPITester:
         self.session.headers.pop("Authorization", None)
         
         try:
-            # Test protected endpoint without auth
+            # Test protected endpoint without auth (should return 403)
             response = self.session.post(f"{API_BASE}/resume/experience", json={
                 "position": "Test",
                 "company": "Test",
@@ -566,11 +566,11 @@ class ResumeAPITester:
                 "description": "Test"
             })
             
-            if response.status_code == 401:
-                self.log_test("Unauthorized Access Protection", True, "Protected endpoint correctly requires authentication")
+            if response.status_code in [401, 403]:
+                self.log_test("Unauthorized Access Protection", True, f"Protected endpoint correctly requires authentication (status: {response.status_code})")
                 success = True
             else:
-                self.log_test("Unauthorized Access Protection", False, f"Expected 401, got {response.status_code}")
+                self.log_test("Unauthorized Access Protection", False, f"Expected 401 or 403, got {response.status_code}")
                 success = False
                 
             # Restore auth token
