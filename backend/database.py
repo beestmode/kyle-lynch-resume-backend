@@ -7,16 +7,9 @@ from datetime import datetime
 # Database configuration
 mongo_url = os.environ.get('MONGO_URL')
 
-# Configure SSL/TLS for MongoDB Atlas
-import ssl
-ssl_context = ssl.create_default_context()
-ssl_context.check_hostname = False
-ssl_context.verify_mode = ssl.CERT_NONE
-
+# Configure Motor client with SSL/TLS for MongoDB Atlas
 client = AsyncIOMotorClient(
     mongo_url,
-    ssl=True,
-    ssl_cert_reqs=ssl.CERT_NONE,
     tls=True,
     tlsAllowInvalidCertificates=True,
     tlsAllowInvalidHostnames=True,
