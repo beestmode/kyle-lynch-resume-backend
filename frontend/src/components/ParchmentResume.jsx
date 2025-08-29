@@ -517,4 +517,237 @@ const ParchmentResume = () => {
   );
 };
 
+// Personal Info Edit Modal Component
+const PersonalInfoEditModal = ({ personalInfo, onClose, onSave }) => {
+  const [formData, setFormData] = useState({
+    name: personalInfo?.name || '',
+    title: personalInfo?.title || '',
+    email: personalInfo?.email || '',
+    phone: personalInfo?.phone || '',
+    linkedin: personalInfo?.linkedin || '',
+    location: personalInfo?.location || ''
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(formData);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+      <Card className="w-full max-w-lg bg-amber-50 border-amber-300">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-bold text-amber-900">Edit Personal Information</h3>
+            <Button variant="ghost" size="sm" onClick={onClose}>
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              placeholder="Full Name"
+              value={formData.name}
+              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              className="border-amber-300"
+            />
+            <Input
+              placeholder="Professional Title"
+              value={formData.title}
+              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              className="border-amber-300"
+            />
+            <Input
+              placeholder="Email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+              className="border-amber-300"
+            />
+            <Input
+              placeholder="Phone"
+              value={formData.phone}
+              onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+              className="border-amber-300"
+            />
+            <Input
+              placeholder="LinkedIn URL"
+              value={formData.linkedin}
+              onChange={(e) => setFormData(prev => ({ ...prev, linkedin: e.target.value }))}
+              className="border-amber-300"
+            />
+            <Input
+              placeholder="Location"
+              value={formData.location}
+              onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+              className="border-amber-300"
+            />
+            
+            <div className="flex gap-2 pt-4">
+              <Button type="submit" className="bg-amber-700 hover:bg-amber-800">
+                Save Changes
+              </Button>
+              <Button type="button" variant="outline" onClick={onClose}>
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
+// Highlights Edit Modal Component  
+const HighlightsEditModal = ({ highlights, onClose, onSave }) => {
+  const [highlightList, setHighlightList] = useState(highlights);
+  const [newHighlight, setNewHighlight] = useState('');
+
+  const handleAddHighlight = () => {
+    if (newHighlight.trim()) {
+      setHighlightList([...highlightList, newHighlight.trim()]);
+      setNewHighlight('');
+    }
+  };
+
+  const handleRemoveHighlight = (index) => {
+    setHighlightList(highlightList.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(highlightList);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+      <Card className="w-full max-w-lg bg-amber-50 border-amber-300">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-bold text-amber-900">Edit Highlights</h3>
+            <Button variant="ghost" size="sm" onClick={onClose}>
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Add new highlight..."
+                  value={newHighlight}
+                  onChange={(e) => setNewHighlight(e.target.value)}
+                  className="border-amber-300"
+                />
+                <Button type="button" onClick={handleAddHighlight} size="sm">
+                  Add
+                </Button>
+              </div>
+              
+              <div className="space-y-2 max-h-60 overflow-y-auto">
+                {highlightList.map((highlight, index) => (
+                  <div key={index} className="flex gap-2 items-center p-2 bg-amber-100 rounded">
+                    <span className="flex-1 text-sm">{highlight}</span>
+                    <Button 
+                      type="button"
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => handleRemoveHighlight(index)}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div className="flex gap-2 pt-4">
+              <Button type="submit" className="bg-amber-700 hover:bg-amber-800">
+                Save Changes
+              </Button>
+              <Button type="button" variant="outline" onClick={onClose}>
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
+// Skills Edit Modal Component
+const SkillsEditModal = ({ skills, onClose, onSave }) => {
+  const [skillList, setSkillList] = useState(skills);
+  const [newSkill, setNewSkill] = useState('');
+
+  const handleAddSkill = () => {
+    if (newSkill.trim()) {
+      setSkillList([...skillList, newSkill.trim()]);
+      setNewSkill('');
+    }
+  };
+
+  const handleRemoveSkill = (index) => {
+    setSkillList(skillList.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(skillList);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+      <Card className="w-full max-w-lg bg-amber-50 border-amber-300">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-bold text-amber-900">Edit Skills</h3>
+            <Button variant="ghost" size="sm" onClick={onClose}>
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Add new skill..."
+                  value={newSkill}
+                  onChange={(e) => setNewSkill(e.target.value)}
+                  className="border-amber-300"
+                />
+                <Button type="button" onClick={handleAddSkill} size="sm">
+                  Add
+                </Button>
+              </div>
+              
+              <div className="flex flex-wrap gap-2 max-h-60 overflow-y-auto">
+                {skillList.map((skill, index) => (
+                  <Badge 
+                    key={index}
+                    className="bg-amber-200 text-amber-900 cursor-pointer hover:bg-red-200"
+                    onClick={() => handleRemoveSkill(index)}
+                  >
+                    {skill} ×
+                  </Badge>
+                ))}
+              </div>
+            </div>
+            
+            <div className="flex gap-2 pt-4">
+              <Button type="submit" className="bg-amber-700 hover:bg-amber-800">
+                Save Changes
+              </Button>
+              <Button type="button" variant="outline" onClick={onClose}>
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
 export default ParchmentResume;
