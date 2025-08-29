@@ -32,6 +32,10 @@ const ParchmentResume = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [selectedExperience, setSelectedExperience] = useState(null);
+  const [editingPersonal, setEditingPersonal] = useState(false);
+  const [editingHighlights, setEditingHighlights] = useState(false);
+  const [editingSkills, setEditingSkills] = useState(false);
+  const [editingEducation, setEditingEducation] = useState(false);
   const { isAuthenticated, logout } = useAuth();
   const { toast } = useToast();
 
