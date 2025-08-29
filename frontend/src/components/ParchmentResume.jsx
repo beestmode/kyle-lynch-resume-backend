@@ -395,6 +395,16 @@ const ParchmentResume = () => {
               <h2 className="text-2xl font-bold text-amber-900 mb-6 flex items-center gap-2">
                 <GraduationCap className="w-6 h-6" />
                 Education & Certifications
+                {isAuthenticated && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setEditingEducation(true)}
+                    className="ml-auto text-amber-700 hover:text-amber-900 hover:bg-amber-100"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </Button>
+                )}
               </h2>
               
               <div className="grid gap-4 md:grid-cols-2">
