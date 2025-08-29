@@ -305,10 +305,20 @@ const ParchmentResume = () => {
             </div>
 
             {/* Highlights Section */}
-            <section className="mb-12">
+            <section className="mb-12 relative">
               <h2 className="text-2xl font-bold text-amber-900 mb-6 flex items-center gap-2">
                 <Star className="w-6 h-6" />
                 Highlights of Qualifications
+                {isAuthenticated && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setEditingHighlights(true)}
+                    className="ml-auto text-amber-700 hover:text-amber-900 hover:bg-amber-100"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </Button>
+                )}
               </h2>
               <div className="space-y-3">
                 {resumeData.highlights?.map((highlight, index) => (
