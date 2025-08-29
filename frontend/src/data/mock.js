@@ -160,6 +160,6 @@ export const resumeData = {
 export const mockUser = {
   id: "admin",
   username: "admin",
-  email: "kyle.lynch@comcast.net",
+  email: "kclynch@uh.edu",
   role: "admin"
 };
