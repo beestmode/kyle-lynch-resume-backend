@@ -3,6 +3,8 @@ import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
+import { Input } from './ui/input';
+import { Textarea } from './ui/textarea';
 import { 
   Download, 
   Mail, 
@@ -16,7 +18,8 @@ import {
   Star,
   Edit,
   Settings,
-  LogOut
+  LogOut,
+  X
 } from 'lucide-react';
 import ContactForm from './ContactForm';
 import EditExperienceModal from './EditExperienceModal';
