@@ -166,7 +166,17 @@ const ParchmentResume = () => {
           {/* Main Content */}
           <div className="relative z-10 p-12">
             {/* Header Section */}
-            <header className="text-center mb-12 border-b-2 border-amber-600 pb-8">
+            <header className="text-center mb-12 border-b-2 border-amber-600 pb-8 relative">
+              {isAuthenticated && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setEditingPersonal(true)}
+                  className="absolute top-0 right-0 text-amber-700 hover:text-amber-900 hover:bg-amber-100"
+                >
+                  <Edit className="w-4 h-4" />
+                </Button>
+              )}
               <h1 className="text-5xl font-bold text-amber-900 mb-4 calligraphic-font tracking-wide">
                 {resumeData.personal_info?.name || 'Kyle J. Lynch'}
               </h1>
