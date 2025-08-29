@@ -7,16 +7,12 @@ from datetime import datetime
 # Database configuration
 mongo_url = os.environ.get('MONGO_URL')
 
-# Configure Motor client with SSL/TLS for MongoDB Atlas
-client = AsyncIOMotorClient(
-    mongo_url,
-    tls=True,
-    tlsAllowInvalidCertificates=True,
-    tlsAllowInvalidHostnames=True,
-    serverSelectionTimeoutMS=30000,  # 30 seconds
-    connectTimeoutMS=10000,  # 10 seconds
-    retryWrites=True
-)
+# For Railway deployment, add SSL parameters if not in connection string
+if mongo_url and 'ssl=true' not in mongo_url and 'tls=true' not in mongo_url:
+    separator = '&' if '?' in mongo_url else '?'
+    mongo_url += f'{separator}ssl=true&retryWrites=true&w=majority'
+
+client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ.get('DB_NAME', 'resume_db')]
 
 # Collections
