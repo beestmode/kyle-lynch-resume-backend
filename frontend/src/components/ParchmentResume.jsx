@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { resumeData } from '../data/mock';
+import React, { useState, useEffect } from 'react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -15,34 +14,149 @@ import {
   GraduationCap,
   Briefcase,
   Star,
-  Edit
+  Edit,
+  Settings,
+  LogOut
 } from 'lucide-react';
 import ContactForm from './ContactForm';
 import EditExperienceModal from './EditExperienceModal';
+import AdminLogin from './AdminLogin';
+import { resumeAPI } from '../services/api';
+import { useAuth } from './AuthContext';
+import { useToast } from '../hooks/use-toast';
 
 const ParchmentResume = () => {
+  const [resumeData, setResumeData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [showContact, setShowContact] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [selectedExperience, setSelectedExperience] = useState(null);
+  const { isAuthenticated, logout } = useAuth();
+  const { toast } = useToast();
 
-  const handleDownloadPDF = () => {
-    // Mock download functionality
-    const link = document.createElement('a');
-    link.href = '/api/resume/download-pdf';
-    link.download = 'Kyle_Lynch_Resume.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  // Load resume data on mount
+  useEffect(() => {
+    loadResumeData();
+  }, []);
+
+  const loadResumeData = async () => {
+    try {
+      setLoading(true);
+      const data = await resumeAPI.getResume();
+      setResumeData(data);
+    } catch (error) {
+      console.error('Error loading resume:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load resume data. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    try {
+      const pdfBlob = await resumeAPI.downloadPDF();
+      
+      // Create download link
+      const url = window.URL.createObjectURL(pdfBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'Kyle_Lynch_Resume.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: "Success",
+        description: "Resume PDF downloaded successfully!",
+      });
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      toast({
+        title: "Error",
+        description: "Failed to download PDF. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleEditExperience = (experience) => {
+    if (!isAuthenticated) {
+      setShowAdminLogin(true);
+      return;
+    }
     setSelectedExperience(experience);
     setShowEditModal(true);
   };
 
+  const handleExperienceUpdated = () => {
+    // Reload resume data after update
+    loadResumeData();
+    setShowEditModal(false);
+    setSelectedExperience(null);
+  };
+
+  const handleAdminLoginSuccess = () => {
+    toast({
+      title: "Admin Access Granted",
+      description: "You can now edit resume content.",
+    });
+  };
+
+  const handleLogout = () => {
+    logout();
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mx-auto mb-4"></div>
+          <p className="text-amber-800 text-lg">Loading resume...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!resumeData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-amber-800 text-lg">Failed to load resume data.</p>
+          <Button 
+            onClick={loadResumeData}
+            className="mt-4 bg-amber-700 hover:bg-amber-800 text-cream"
+          >
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50 p-4">
       <div className="max-w-4xl mx-auto">
+        {/* Admin Controls */}
+        {isAuthenticated && (
+          <div className="fixed top-4 right-4 z-30 flex gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleLogout}
+              className="bg-amber-100 border-amber-300 text-amber-800 hover:bg-amber-200"
+            >
+              <LogOut className="w-4 h-4 mr-1" />
+              Logout
+            </Button>
+          </div>
+        )}
+
         {/* Parchment Paper Effect */}
         <div className="parchment-container relative bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-100 shadow-2xl border border-amber-200 overflow-hidden">
           {/* Decorative Border */}
@@ -54,28 +168,28 @@ const ParchmentResume = () => {
             {/* Header Section */}
             <header className="text-center mb-12 border-b-2 border-amber-600 pb-8">
               <h1 className="text-5xl font-bold text-amber-900 mb-4 calligraphic-font tracking-wide">
-                {resumeData.personalInfo.name}
+                {resumeData.personal_info?.name || 'Kyle J. Lynch'}
               </h1>
               <p className="text-xl text-amber-800 mb-6 italic font-medium">
-                {resumeData.personalInfo.title}
+                {resumeData.personal_info?.title || 'Facilities Coordinator & Technical Systems Professional'}
               </p>
               
               {/* Contact Information */}
               <div className="flex flex-wrap justify-center gap-6 text-amber-800">
                 <div className="flex items-center gap-2">
                   <Mail className="w-4 h-4" />
-                  <a href={`mailto:${resumeData.personalInfo.email}`} 
+                  <a href={`mailto:${resumeData.personal_info?.email}`} 
                      className="hover:text-amber-900 transition-colors">
-                    {resumeData.personalInfo.email}
+                    {resumeData.personal_info?.email}
                   </a>
                 </div>
                 <div className="flex items-center gap-2">
                   <Phone className="w-4 h-4" />
-                  <span>{resumeData.personalInfo.phone}</span>
+                  <span>{resumeData.personal_info?.phone}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Linkedin className="w-4 h-4" />
-                  <a href={resumeData.personalInfo.linkedin} 
+                  <a href={resumeData.personal_info?.linkedin} 
                      target="_blank" 
                      rel="noopener noreferrer"
                      className="hover:text-amber-900 transition-colors">
@@ -84,7 +198,7 @@ const ParchmentResume = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4" />
-                  <span>{resumeData.personalInfo.location}</span>
+                  <span>{resumeData.personal_info?.location}</span>
                 </div>
               </div>
             </header>
@@ -106,6 +220,16 @@ const ParchmentResume = () => {
                 <Mail className="w-4 h-4 mr-2" />
                 Contact Me
               </Button>
+              {!isAuthenticated && (
+                <Button
+                  onClick={() => setShowAdminLogin(true)}
+                  variant="outline"
+                  className="border-amber-600 text-amber-800 hover:bg-amber-100"
+                >
+                  <Settings className="w-4 h-4 mr-2" />
+                  Admin
+                </Button>
+              )}
             </div>
 
             {/* Highlights Section */}
@@ -115,7 +239,7 @@ const ParchmentResume = () => {
                 Highlights of Qualifications
               </h2>
               <div className="space-y-3">
-                {resumeData.highlights.map((highlight, index) => (
+                {resumeData.highlights?.map((highlight, index) => (
                   <div key={index} className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-amber-600 rounded-full mt-3 flex-shrink-0"></div>
                     <p className="text-amber-800 text-lg leading-relaxed">{highlight}</p>
@@ -132,8 +256,8 @@ const ParchmentResume = () => {
               </h2>
               
               <div className="space-y-8">
-                {resumeData.experience.map((exp, index) => (
-                  <Card key={exp.id} className="bg-amber-50/50 border-amber-200 p-6 hover:shadow-lg transition-shadow">
+                {resumeData.experience?.map((exp, index) => (
+                  <Card key={exp.id || index} className="bg-amber-50/50 border-amber-200 p-6 hover:shadow-lg transition-shadow">
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex-grow">
                         <h3 className="text-xl font-bold text-amber-900 mb-1">
@@ -169,7 +293,7 @@ const ParchmentResume = () => {
                       {exp.description}
                     </p>
                     
-                    {exp.achievements && (
+                    {exp.achievements && exp.achievements.length > 0 && (
                       <div className="mt-4">
                         <h4 className="font-semibold text-amber-900 mb-2">Key Achievements:</h4>
                         <ul className="list-disc list-inside space-y-1">
@@ -192,7 +316,7 @@ const ParchmentResume = () => {
               </h2>
               
               <div className="grid gap-4 md:grid-cols-2">
-                {resumeData.education.map((edu) => (
+                {resumeData.education?.map((edu) => (
                   <Card key={edu.id} className="bg-amber-50/50 border-amber-200 p-4">
                     <h3 className="font-bold text-amber-900 mb-1">{edu.degree}</h3>
                     <p className="text-amber-700 font-medium">{edu.institution}</p>
@@ -211,7 +335,7 @@ const ParchmentResume = () => {
                 Core Competencies
               </h2>
               <div className="flex flex-wrap gap-3">
-                {resumeData.skills.map((skill, index) => (
+                {resumeData.skills?.map((skill, index) => (
                   <Badge 
                     key={index}
                     className="bg-amber-100 text-amber-800 border-amber-300 px-4 py-2 text-sm font-medium hover:bg-amber-200 transition-colors"
@@ -226,7 +350,7 @@ const ParchmentResume = () => {
             <div className="mt-16 text-center">
               <Separator className="bg-amber-600 mb-6" />
               <p className="text-amber-600 italic text-sm">
-                Professional Resume of {resumeData.personalInfo.name}
+                Professional Resume of {resumeData.personal_info?.name || 'Kyle J. Lynch'}
               </p>
             </div>
           </div>
@@ -237,7 +361,15 @@ const ParchmentResume = () => {
       {showContact && (
         <ContactForm 
           onClose={() => setShowContact(false)}
-          recipientEmail={resumeData.personalInfo.email}
+          recipientEmail={resumeData.personal_info?.email}
+        />
+      )}
+
+      {/* Admin Login Modal */}
+      {showAdminLogin && (
+        <AdminLogin 
+          onClose={() => setShowAdminLogin(false)}
+          onSuccess={handleAdminLoginSuccess}
         />
       )}
 
@@ -246,11 +378,7 @@ const ParchmentResume = () => {
         <EditExperienceModal
           experience={selectedExperience}
           onClose={() => setShowEditModal(false)}
-          onSave={(updatedExp) => {
-            // Mock save functionality
-            console.log('Updated experience:', updatedExp);
-            setShowEditModal(false);
-          }}
+          onSave={handleExperienceUpdated}
         />
       )}
     </div>
