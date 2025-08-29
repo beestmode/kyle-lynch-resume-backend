@@ -423,8 +423,18 @@ const ParchmentResume = () => {
 
             {/* Skills Section */}
             <section>
-              <h2 className="text-2xl font-bold text-amber-900 mb-6">
+              <h2 className="text-2xl font-bold text-amber-900 mb-6 flex items-center gap-2">
                 Core Competencies
+                {isAuthenticated && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setEditingSkills(true)}
+                    className="ml-auto text-amber-700 hover:text-amber-900 hover:bg-amber-100"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </Button>
+                )}
               </h2>
               <div className="flex flex-wrap gap-3">
                 {resumeData.skills?.map((skill, index) => (
