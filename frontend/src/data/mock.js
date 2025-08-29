@@ -145,15 +145,15 @@ export const resumeData = {
   ],
   
   skills: [
-    "Network Troubleshooting",
-    "IT Systems Management", 
-    "HVAC Systems",
-    "Building Automation",
-    "iOS/macOS Support",
-    "Electrical Systems",
-    "Technical Writing",
-    "Team Leadership",
-    "Transportation & Logistics"
+    "Facilities Coordination & Management",
+    "Building Automation Systems", 
+    "HVAC Operations & Maintenance",
+    "Customer Service & Liaison Relations",
+    "Preventive Maintenance Planning",
+    "Contractor & Vendor Coordination",
+    "Emergency Response Management",
+    "Technical Infrastructure Management",
+    "Multi-Campus Operations"
   ]
 };
 
