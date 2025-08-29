@@ -1,7 +1,7 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from typing import Optional
 import os
-from models import Resume, Experience, Education, ContactMessage, User
+from models import Experience, Education, ContactMessage, User
 from datetime import datetime
 
 # Database configuration
