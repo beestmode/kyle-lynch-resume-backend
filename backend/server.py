@@ -7,9 +7,6 @@ import os
 import logging
 from pathlib import Path
 from io import BytesIO
-import smtplib
-from email.mime.text import MimeText
-from email.mime.multipart import MimeMultipart
 
 # Import our modules
 from models import *
