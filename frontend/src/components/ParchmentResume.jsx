@@ -364,14 +364,16 @@ const ParchmentResume = () => {
                           )}
                         </div>
                       </div>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleEditExperience(exp)}
-                        className="text-amber-600 hover:text-amber-800 hover:bg-amber-100"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
+                      {isAuthenticated && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleEditExperience(exp)}
+                          className="text-amber-600 hover:text-amber-800 hover:bg-amber-100"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                      )}
                     </div>
                     
                     <p className="text-amber-800 leading-relaxed mb-4">
