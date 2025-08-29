@@ -63,14 +63,23 @@ export const resumeData = {
     {
       id: 1,
       position: "Lead Facilities Technician",
-      company: "University of Houston System",
-      location: "Houston, TX",
-      duration: "2/23 - present",
-      description: "Lead comprehensive facilities operations and coordinate technical infrastructure across multiple campus buildings. Manage preventive maintenance schedules, oversee contractor relationships, and serve as primary liaison between facilities management and building occupants. Coordinate emergency response procedures and ensure optimal facility performance through proactive system monitoring and maintenance planning.",
+      company: "Carlton Staffing",
+      location: "Sugar Land, TX",
+      duration: "7/25 - present",
+      description: "Lead comprehensive facilities operations and coordinate technical infrastructure across multiple client sites. Manage preventive maintenance schedules, oversee contractor relationships, and serve as primary liaison between facilities management and building occupants. Coordinate emergency response procedures and ensure optimal facility performance through proactive system monitoring and maintenance planning.",
       current: true
     },
     {
       id: 2,
+      position: "Class B Transportation Driver",
+      company: "Victory Driveaway, Inc.",
+      location: "Laredo, TX",
+      duration: "2/23 - 7/25",
+      description: "Coordinated contract opportunities for national transportation company while maintaining exceptional customer service standards. Managed driveaway services over long distances with full operational responsibility. Coordinated delivery services for various companies while maintaining contractual obligations and customer satisfaction. Maintained clean driving record and all required certifications while providing reliable transportation coordination services.",
+      current: false
+    },
+    {
+      id: 3,
       position: "Technical Expert/Applecare Home Advisor",
       company: "Apple Inc.",
       location: "Houston, TX",
@@ -79,7 +88,7 @@ export const resumeData = {
       current: false
     },
     {
-      id: 3,
+      id: 4,
       position: "Building Automation Specialist II",
       company: "Fort Bend I.S.D.",
       location: "Stafford, TX",
@@ -88,7 +97,7 @@ export const resumeData = {
       current: false
     },
     {
-      id: 4,
+      id: 5,
       position: "Systems Manager",
       company: "JBT Aerotech Services",
       location: "Houston, TX",
@@ -97,7 +106,7 @@ export const resumeData = {
       current: false
     },
     {
-      id: 5,
+      id: 6,
       position: "Electrical Technician",
       company: "Abilities Unlimited, Inc.",
       location: "Houston, TX",
@@ -106,7 +115,7 @@ export const resumeData = {
       current: false
     },
     {
-      id: 6,
+      id: 7,
       position: "HVAC Technician/Instructor & Facilities Coordinator",
       company: "Houston Community College",
       location: "Houston, TX",
@@ -115,7 +124,7 @@ export const resumeData = {
       current: false
     },
     {
-      id: 7,
+      id: 8,
       position: "Rental Operations Manager",
       company: "Mac Enthusiasts",
       location: "Los Angeles, CA",
@@ -124,7 +133,7 @@ export const resumeData = {
       current: false
     },
     {
-      id: 8,
+      id: 9,
       position: "NOC Engineer/Capacity Planner",
       company: "Metricom Inc.",
       location: "Plano, TX",
@@ -134,7 +143,7 @@ export const resumeData = {
       current: false
     },
     {
-      id: 9,
+      id: 10,
       position: "Lead Microcomputer Specialist & IT Coordinator",
       company: "Deloitte Consulting",
       location: "Houston, TX", 
