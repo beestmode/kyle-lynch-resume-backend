@@ -43,10 +43,16 @@ logger = logging.getLogger(__name__)
 @app.on_event("startup")
 async def startup_event():
     """Initialize database with default data"""
-    await create_default_admin()
-    # Initialize resume data if needed
-    await ResumeDatabase.get_resume()
-    logger.info("✅ Resume API server started successfully")
+    try:
+        # Make database operations optional for Railway deployment
+        await create_default_admin()
+        # Initialize resume data if needed  
+        await ResumeDatabase.get_resume()
+        logger.info("✅ Resume API server started successfully")
+    except Exception as e:
+        # Log error but don't prevent startup - lazy initialization will handle this
+        logger.warning(f"Startup database initialization failed (will retry on first request): {str(e)}")
+        logger.info("✅ Resume API server started successfully (database will initialize on first request)")
 
 # Health check
 @api_router.get("/")
