@@ -7,6 +7,7 @@ import { Label } from './ui/label';
 import { Switch } from './ui/switch';
 import { X, Save, Plus, Trash2 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
+import { experienceAPI } from '../services/api';
 
 const EditExperienceModal = ({ experience, onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -27,25 +28,19 @@ const EditExperienceModal = ({ experience, onClose, onSave }) => {
     setIsSubmitting(true);
 
     try {
-      // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      const updatedExperience = {
-        ...experience,
-        ...formData
-      };
-      
-      onSave(updatedExperience);
+      await experienceAPI.updateExperience(experience.id, formData);
       
       toast({
         title: "Experience Updated!",
         description: "The experience has been successfully updated.",
       });
       
+      onSave(); // This will refresh the resume data
     } catch (error) {
+      console.error('Experience update error:', error);
       toast({
         title: "Error",
-        description: "Failed to update experience. Please try again.",
+        description: error.response?.data?.detail || "Failed to update experience. Please try again.",
         variant: "destructive",
       });
     } finally {
