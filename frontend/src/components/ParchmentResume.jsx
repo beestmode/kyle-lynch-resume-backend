@@ -116,6 +116,64 @@ const ParchmentResume = () => {
     logout();
   };
 
+  // New edit handlers for different sections
+  const handleUpdatePersonalInfo = async (personalData) => {
+    try {
+      await resumeAPI.updatePersonalInfo(personalData);
+      loadResumeData();
+      setEditingPersonal(false);
+      toast({
+        title: "Success",
+        description: "Personal information updated successfully!",
+      });
+    } catch (error) {
+      console.error('Error updating personal info:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update personal information.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUpdateHighlights = async (highlights) => {
+    try {
+      await resumeAPI.updateHighlights({ highlights });
+      loadResumeData();
+      setEditingHighlights(false);
+      toast({
+        title: "Success",
+        description: "Highlights updated successfully!",
+      });
+    } catch (error) {
+      console.error('Error updating highlights:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update highlights.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUpdateSkills = async (skills) => {
+    try {
+      await resumeAPI.updateSkills({ skills });
+      loadResumeData();
+      setEditingSkills(false);
+      toast({
+        title: "Success",
+        description: "Skills updated successfully!",
+      });
+    } catch (error) {
+      console.error('Error updating skills:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update skills.",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50 flex items-center justify-center">
