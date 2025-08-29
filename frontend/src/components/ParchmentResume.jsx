@@ -470,6 +470,33 @@ const ParchmentResume = () => {
         />
       )}
 
+      {/* Personal Info Edit Modal */}
+      {editingPersonal && (
+        <PersonalInfoEditModal
+          personalInfo={resumeData.personal_info}
+          onClose={() => setEditingPersonal(false)}
+          onSave={handleUpdatePersonalInfo}
+        />
+      )}
+
+      {/* Highlights Edit Modal */}
+      {editingHighlights && (
+        <HighlightsEditModal
+          highlights={resumeData.highlights || []}
+          onClose={() => setEditingHighlights(false)}
+          onSave={handleUpdateHighlights}
+        />
+      )}
+
+      {/* Skills Edit Modal */}
+      {editingSkills && (
+        <SkillsEditModal
+          skills={resumeData.skills || []}
+          onClose={() => setEditingSkills(false)}
+          onSave={handleUpdateSkills}
+        />
+      )}
+
       {/* Admin Login Modal */}
       {showAdminLogin && (
         <AdminLogin 
