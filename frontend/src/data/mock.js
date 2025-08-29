@@ -2,16 +2,16 @@
 export const resumeData = {
   personalInfo: {
     name: "Kyle J. Lynch",
-    email: "kyle.lynch@comcast.net",
+    email: "kclynch@uh.edu",
     phone: "713.226.9038",
     linkedin: "https://www.linkedin.com/in/kyle-lynch-5539318",
-    title: "Technical Expert & Network Professional",
+    title: "Facilities Coordinator & Technical Systems Professional",
     location: "Houston, TX"
   },
   
   highlights: [
-    "A highly talented Driver, Technician and Network Professional with extensive experience servicing various fields",
-    "Twenty years' experience in repair, troubleshooting and service on various brands of IT/Networking systems"
+    "Experienced Facilities Coordinator with extensive background in building automation, HVAC systems, and technical infrastructure management",
+    "Twenty years' experience in facilities operations, customer service coordination, and multi-system technical support across educational, corporate, and airport environments"
   ],
   
   education: [
