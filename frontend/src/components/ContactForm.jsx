@@ -6,6 +6,7 @@ import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
 import { X, Send, Mail } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
+import { contactAPI } from '../services/api';
 
 const ContactForm = ({ onClose, recipientEmail }) => {
   const [formData, setFormData] = useState({
@@ -22,8 +23,12 @@ const ContactForm = ({ onClose, recipientEmail }) => {
     setIsSubmitting(true);
 
     try {
-      // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const contactData = {
+        ...formData,
+        recipient_email: recipientEmail || 'kclynch@uh.edu'
+      };
+
+      await contactAPI.submitContact(contactData);
       
       toast({
         title: "Message Sent!",
@@ -32,9 +37,10 @@ const ContactForm = ({ onClose, recipientEmail }) => {
       
       onClose();
     } catch (error) {
+      console.error('Contact form error:', error);
       toast({
         title: "Error",
-        description: "Failed to send message. Please try again.",
+        description: error.response?.data?.detail || "Failed to send message. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -154,7 +160,7 @@ const ContactForm = ({ onClose, recipientEmail }) => {
 
           <div className="mt-6 pt-4 border-t border-amber-200">
             <p className="text-sm text-amber-600 text-center">
-              Direct email: <a href={`mailto:${recipientEmail}`} className="hover:text-amber-800 font-medium">{recipientEmail}</a>
+              Direct email: <a href={`mailto:${recipientEmail || 'kclynch@uh.edu'}`} className="hover:text-amber-800 font-medium">{recipientEmail || 'kclynch@uh.edu'}</a>
             </p>
           </div>
         </div>
