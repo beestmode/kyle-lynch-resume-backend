@@ -308,7 +308,7 @@ async def download_resume_pdf():
         buffer = BytesIO(pdf_bytes)
         
         return StreamingResponse(
-            io=buffer,
+            buffer,
             media_type="application/pdf",
             headers={"Content-Disposition": "attachment; filename=Kyle_Lynch_Resume.pdf"}
         )
