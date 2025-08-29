@@ -62,11 +62,11 @@ export const resumeData = {
   experience: [
     {
       id: 1,
-      position: "Class B Transportation Driver",
-      company: "Victory Driveaway, Inc.",
-      location: "Laredo, TX",
+      position: "Lead Facilities Technician",
+      company: "University of Houston System",
+      location: "Houston, TX",
       duration: "2/23 - present",
-      description: "Optimized contract opportunities for national transportation company. Optimized driveaway services over long distances while covering full expenses for operations. Performed everyday delivery services for various companies while maintaining contractual obligations with many driveaway companies. Maintained license, medical card and possess clean driving record with no DUI/DWI convictions, or moving violations while servicing.",
+      description: "Lead comprehensive facilities operations and coordinate technical infrastructure across multiple campus buildings. Manage preventive maintenance schedules, oversee contractor relationships, and serve as primary liaison between facilities management and building occupants. Coordinate emergency response procedures and ensure optimal facility performance through proactive system monitoring and maintenance planning.",
       current: true
     },
     {
@@ -75,7 +75,7 @@ export const resumeData = {
       company: "Apple Inc.",
       location: "Houston, TX",
       duration: "10/19 – 2/23",
-      description: "Maintaining and updating support information and actions in the IT system. Uphold an in-depth understanding of systematic troubleshooting for iOS, iPad OS and Mac OS X. Deliver technical support at the Genius Bar for technical analysis and escalations. Worked with Applecare team to assist customers with iOS, iPadOS and watch resolutions.",
+      description: "Provided exceptional customer service and technical coordination for iOS, iPad OS and Mac OS X systems. Delivered comprehensive technical support with emphasis on customer satisfaction and problem resolution. Coordinated escalations and maintained detailed service documentation. Developed strong customer relationship management skills while troubleshooting complex technical issues.",
       current: false
     },
     {
@@ -84,7 +84,7 @@ export const resumeData = {
       company: "Fort Bend I.S.D.",
       location: "Stafford, TX",
       duration: "2/17 – 10/19",
-      description: "Perform work of considerable difficulty in the operation, maintenance, repair, and installation of building automation systems and HVAC controls for various school and administration buildings. Provided sophisticated electrical troubleshooting and repairs including wiring single/three phase motors.",
+      description: "Coordinated building automation systems and HVAC controls across multiple school facilities and administration buildings. Managed sophisticated electrical troubleshooting and repair operations including single/three phase motor systems. Served as key liaison between maintenance teams, administration, and external contractors to ensure optimal facility operations and occupant comfort.",
       current: false
     },
     {
@@ -93,7 +93,7 @@ export const resumeData = {
       company: "JBT Aerotech Services",
       location: "Houston, TX",
       duration: "2/15 – 2/17", 
-      description: "Assisted in the efforts to build, design, maintain & troubleshoot parameters of an intelligent operations network to be implemented in modules utilized by entities of various airlines. Responsible for the configuration and management of an environment thru VM Workstations and Web Servers including Windows Server 2008 OS.",
+      description: "Coordinated intelligent operations network implementation for aviation industry clients. Managed configuration and maintenance of VM Workstations and Web Servers including Windows Server 2008 OS environments. Facilitated communication between technical teams and airline entities to ensure seamless system deployment and optimal performance.",
       current: false
     },
     {
@@ -102,25 +102,25 @@ export const resumeData = {
       company: "Abilities Unlimited, Inc.",
       location: "Houston, TX",
       duration: "10/12 - 02/15",
-      description: "Responsible for advanced inspecting, maintaining, and repairing various types of equipment to prolong the serviceable life of all equipment at George Bush IAH. Prepared maintenance schedules for equipment, vehicles, and facilities. Performed sophisticated electrical troubleshooting and repairs including wiring single/three phase motors.",
+      description: "Coordinated advanced inspection and maintenance protocols for critical equipment at George Bush IAH. Developed and managed preventive maintenance schedules for equipment, vehicles, and facility systems. Led sophisticated electrical troubleshooting operations and coordinated repair activities to maximize equipment serviceable life and facility uptime.",
       current: false
     },
     {
       id: 6,
-      position: "HVAC Technician/Instructor",
+      position: "HVAC Technician/Instructor & Facilities Coordinator",
       company: "Houston Community College",
       location: "Houston, TX",
       duration: "8/11 - 10/12",
-      description: "Managed the operation and maintenance of all facilities and mechanical systems including audio visual, electrical, lighting, plumbing and HVAC systems for the six southeast campuses. Managed and maintained HVAC equipment. Adjunct instructor of introductory A/C and Refrigeration classes for Workforce Center within the Southeast College system.",
+      description: "Coordinated comprehensive facilities operations across six southeast campus locations. Managed all mechanical systems including audio visual, electrical, lighting, plumbing and HVAC infrastructure. Served as instructor liaison for workforce development programs while maintaining optimal facility conditions. Coordinated maintenance schedules and contractor relationships to ensure seamless campus operations.",
       current: false
     },
     {
       id: 7,
-      position: "Rental Manager",
+      position: "Rental Operations Manager",
       company: "Mac Enthusiasts",
       location: "Los Angeles, CA",
       duration: "11/03 - 8/11",
-      description: "Performed sales, rental, delivery, installation and breakdown of Apple equipment for various clients including Fox, Paramount Studios and various directors and editors in Hollywood and Los Angeles, CA. Handled all rental department inventory and maintenance for authorized reseller/service provider of Apple computers.",
+      description: "Coordinated equipment rental operations and customer service for high-profile entertainment industry clients including Fox, Paramount Studios and Hollywood productions. Managed client relationships, coordinated delivery schedules, and oversaw technical support services. Maintained comprehensive inventory management and served as primary client liaison for Apple computer solutions.",
       current: false
     },
     {
@@ -129,17 +129,17 @@ export const resumeData = {
       company: "Metricom Inc.",
       location: "Plano, TX",
       duration: "3/00 - 11/03",
-      description: "Monitored and managed a nationwide wireless data network. Repaired network when system performance dropped below standard operating levels. Troubleshooting of network problems related to telecommunications, WAN circuits and TCP/IP routing topology.",
+      description: "Coordinated monitoring and management of nationwide wireless data network infrastructure. Led troubleshooting initiatives for network performance optimization and coordinated resolution of telecommunications, WAN circuits and TCP/IP routing issues. Maintained service level agreements and coordinated with field technicians to ensure optimal network performance.",
       achievements: ["Technical Writing: Developed and implemented national standard for deployment of Wired Access Points in the Ricochet wireless data network."],
       current: false
     },
     {
       id: 9,
-      position: "Lead Microcomputer Specialist",
+      position: "Lead Microcomputer Specialist & IT Coordinator",
       company: "Deloitte Consulting",
       location: "Houston, TX", 
       duration: "10/97 - 3/00",
-      description: "Directed team of PC technicians in managing all facets of information technology for Big 5 financial consulting firm including sales, network implementation and maintenance. Sold and redesigned networks, built network servers, implemented Novell Intranetware v4.11 for new and existing clients. Supported 2,500 consulting professionals.",
+      description: "Coordinated comprehensive information technology operations for Big 5 financial consulting firm. Led team of PC technicians and managed client relationships for network implementation and maintenance services. Coordinated network redesign projects, server deployment, and Novell Intranetware v4.11 implementations. Provided technical support coordination for 2,500 consulting professionals.",
       current: false
     }
   ],
