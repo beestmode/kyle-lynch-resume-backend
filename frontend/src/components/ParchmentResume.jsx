@@ -141,7 +141,7 @@ const ParchmentResume = () => {
 
   const handleUpdateHighlights = async (highlights) => {
     try {
-      await resumeAPI.updateHighlights({ highlights });
+      await resumeAPI.updateHighlights(highlights);
       loadResumeData();
       setEditingHighlights(false);
       toast({
@@ -160,7 +160,7 @@ const ParchmentResume = () => {
 
   const handleUpdateSkills = async (skills) => {
     try {
-      await resumeAPI.updateSkills({ skills });
+      await resumeAPI.updateSkills(skills);
       loadResumeData();
       setEditingSkills(false);
       toast({
