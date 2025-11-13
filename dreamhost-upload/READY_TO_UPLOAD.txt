@@ -1,0 +1,124 @@
+=====================================
+✅ READY TO UPLOAD - kylelynch.site
+=====================================
+
+Your Username: dh_qfwyg3
+Web Directory: /home/dh_qfwyg3/kylelynch.site
+
+All files are configured and ready!
+
+=====================================
+UPLOAD INSTRUCTIONS
+=====================================
+
+METHOD 1: DreamHost File Manager (Easiest)
+-------------------------------------------
+1. Go to: https://panel.dreamhost.com
+2. Click: **Websites** → **Manage Websites**
+3. Find: **kylelynch.site** → Click **Manage**
+4. Click: **Manage Files** (or use WebFTP)
+5. You'll be in: /home/dh_qfwyg3/kylelynch.site/
+
+6. UPLOAD FILES:
+   From this "dreamhost-upload" folder:
+   
+   A) Upload these to ROOT:
+      ✓ index.html
+      ✓ asset-manifest.json
+      ✓ static/ (entire folder)
+   
+   B) Upload entire "api" folder:
+      ✓ api/ (entire folder with all files inside)
+
+   FINAL STRUCTURE:
+   /home/dh_qfwyg3/kylelynch.site/
+   ├── index.html
+   ├── asset-manifest.json
+   ├── static/
+   └── api/
+
+7. DONE! (No need to edit .htaccess - already configured!)
+
+METHOD 2: FTP (FileZilla/Cyberduck)
+------------------------------------
+1. Get FTP credentials:
+   - Panel → **Websites** → **Manage Websites** → kylelynch.site → **Manage Files** → **FTP/SFTP**
+
+2. Connect via FTP:
+   - Host: ftp.kylelynch.site
+   - Username: (from DreamHost)
+   - Password: (from DreamHost)
+   - Port: 21
+
+3. Navigate to: /home/dh_qfwyg3/kylelynch.site/
+
+4. Upload same files as Method 1
+
+=====================================
+AFTER UPLOAD - INSTALL PYTHON PACKAGES
+=====================================
+
+You need SSH access to install Python dependencies.
+
+1. Enable Shell Access:
+   - Panel → **Websites** → **Manage Websites** → kylelynch.site
+   - Look for "Shell User" or enable SSH access
+
+2. SSH into DreamHost:
+   ssh dh_qfwyg3@kylelynch.site
+
+3. Install packages:
+   cd ~/kylelynch.site/api
+   pip3 install --user -r requirements.txt
+   
+4. Create restart file:
+   mkdir -p ~/kylelynch.site/tmp
+   touch ~/kylelynch.site/tmp/restart.txt
+
+=====================================
+TESTING
+=====================================
+
+After upload + Python install:
+
+1. Frontend: https://kylelynch.site
+   → Should show your resume
+
+2. Backend API: https://kylelynch.site/api
+   → Should show: {"message": "Kyle Lynch Resume API is running", "status": "healthy"}
+
+3. Admin Panel:
+   - Username: admin
+   - Password: admin123
+   - ⚠️ CHANGE PASSWORD after first login!
+
+=====================================
+TROUBLESHOOTING
+=====================================
+
+Problem: "500 Internal Server Error"
+→ Check Python packages installed
+→ Check file permissions (755 for folders, 644 for files)
+→ Verify Passenger is enabled
+→ Check DreamHost error logs
+
+Problem: "Failed to load resume data"
+→ Test backend: visit https://kylelynch.site/api
+→ Check MongoDB connection
+→ Restart: touch ~/kylelynch.site/tmp/restart.txt
+
+Problem: Site not loading
+→ Wait for DNS propagation (can take up to 24 hours)
+→ Clear browser cache
+→ Try incognito/private mode
+
+=====================================
+SUPPORT
+=====================================
+
+DreamHost Help: https://help.dreamhost.com
+Python on DreamHost: https://help.dreamhost.com/hc/en-us/articles/215489338
+
+=====================================
+
+🎉 You're all set! Upload the files and your site will be live!
