@@ -1,0 +1,109 @@
+=====================================
+KYLELYNCH.SITE - DREAMHOST UPLOAD GUIDE
+=====================================
+
+QUICK START (5 Steps):
+----------------------
+
+1. UPDATE DNS (Do this first!)
+   - Go to your domain registrar (where you bought kylelynch.site)
+   - Change A Record to: 76.31.21.210
+   - Wait 30-60 minutes for DNS to update
+
+2. LOG INTO DREAMHOST
+   - Go to: https://panel.dreamhost.com
+   - Navigate to: Files → WebFTP (or use FTP client)
+   - Go to folder: /home/YOUR_USERNAME/kylelynch.site/
+
+3. UPLOAD FILES
+   From this "dreamhost-upload" folder:
+   
+   A) Upload ALL files EXCEPT "api" folder to ROOT:
+      - index.html → root
+      - static/ folder → root
+      - asset-manifest.json → root
+   
+   B) Upload "api" folder as-is:
+      - The entire "api" folder → root
+      - Result: /home/YOUR_USERNAME/kylelynch.site/api/
+
+4. EDIT .htaccess (IMPORTANT!)
+   - Open file: api/.htaccess
+   - Replace "YOUR_USERNAME" with your actual DreamHost username
+   - Save file
+
+5. INSTALL PYTHON PACKAGES (SSH Required)
+   SSH into DreamHost:
+   $ ssh YOUR_USERNAME@kylelynch.site
+   $ cd ~/kylelynch.site/api
+   $ pip3 install --user -r requirements.txt
+   $ mkdir -p ~/kylelynch.site/tmp
+   $ touch ~/kylelynch.site/tmp/restart.txt
+
+DONE! Visit https://kylelynch.site
+
+=====================================
+FINAL STRUCTURE ON DREAMHOST:
+=====================================
+
+/home/YOUR_USERNAME/kylelynch.site/
+├── index.html              (frontend)
+├── asset-manifest.json     (frontend)
+├── static/                 (frontend)
+│   ├── css/
+│   ├── js/
+│   └── media/
+├── api/                    (backend)
+│   ├── server.py
+│   ├── models.py
+│   ├── database.py
+│   ├── auth.py
+│   ├── pdf_generator.py
+│   ├── passenger_wsgi.py
+│   ├── .htaccess          ← Edit this!
+│   ├── .env
+│   ├── requirements.txt
+│   └── data/
+└── tmp/
+    └── restart.txt
+
+=====================================
+TESTING:
+=====================================
+
+1. Frontend: https://kylelynch.site
+   → Should show resume
+
+2. Backend API: https://kylelynch.site/api
+   → Should show: {"message": "Kyle Lynch Resume API is running", "status": "healthy"}
+
+3. Admin Login:
+   → Username: admin
+   → Password: admin123
+
+=====================================
+TROUBLESHOOTING:
+=====================================
+
+Problem: "500 Internal Server Error"
+→ Check .htaccess has correct username
+→ Verify Python packages installed
+→ Check DreamHost error logs
+
+Problem: "Failed to load resume data"  
+→ Test backend: visit /api
+→ Check MongoDB connection in .env
+→ Restart: touch ~/kylelynch.site/tmp/restart.txt
+
+Problem: SSL Error
+→ Wait for DNS propagation (24-48 hours max)
+→ Enable Let's Encrypt in DreamHost panel
+→ Force HTTPS redirect
+
+=====================================
+NEED MORE HELP?
+=====================================
+
+See detailed guide: DREAMHOST_DEPLOYMENT.md
+
+DreamHost Support: https://help.dreamhost.com
