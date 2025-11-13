@@ -1,0 +1,15 @@
+PassengerEnabled on
+PassengerAppRoot /home/YOUR_USERNAME/kylelynch.site
+PassengerBaseURI /
+PassengerAppType wsgi
+PassengerStartupFile passenger_wsgi.py
+PassengerPython /home/YOUR_USERNAME/.pyenv/versions/3.11.0/bin/python3
+
+# Force HTTPS
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# API routing
+RewriteCond %{REQUEST_URI} ^/api
+RewriteRule ^(.*)$ passenger_wsgi.py/$1 [L]
