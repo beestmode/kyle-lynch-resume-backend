@@ -1,9 +1,9 @@
 PassengerEnabled on
-PassengerAppRoot /home/YOUR_USERNAME/kylelynch.site
+PassengerAppRoot /home/dh_qfwyg3/kylelynch.site
 PassengerBaseURI /
 PassengerAppType wsgi
 PassengerStartupFile passenger_wsgi.py
-PassengerPython /home/YOUR_USERNAME/.pyenv/versions/3.11.0/bin/python3
+PassengerPython /home/dh_qfwyg3/.pyenv/versions/3.11.0/bin/python3
 
 # Force HTTPS
 RewriteEngine On
