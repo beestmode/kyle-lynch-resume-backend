@@ -9,7 +9,6 @@ class ContactStatus(str, Enum):
     READ = "read"
     REPLIED = "replied"
 
-# Personal Information Models
 class PersonalInfo(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
     email: EmailStr
@@ -26,7 +25,6 @@ class PersonalInfoUpdate(BaseModel):
     title: Optional[str] = Field(None, min_length=1, max_length=200)
     location: Optional[str] = Field(None, min_length=1, max_length=100)
 
-# Experience Models
 class Experience(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     position: str = Field(..., min_length=1, max_length=200)
@@ -60,12 +58,11 @@ class ExperienceUpdate(BaseModel):
     achievements: Optional[List[str]] = None
     sort_order: Optional[int] = None
 
-# Education Models
 class Education(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     degree: str = Field(..., min_length=1, max_length=200)
     institution: str = Field(..., min_length=1, max_length=200)
-    location: str = Field(..., max_length=100)
+    location: str = Field(default="", max_length=100)
     duration: str = Field(..., min_length=1, max_length=50)
     sort_order: int = Field(default=0)
 
@@ -83,14 +80,12 @@ class EducationUpdate(BaseModel):
     duration: Optional[str] = Field(None, min_length=1, max_length=50)
     sort_order: Optional[int] = None
 
-# Skills Models
 class SkillsUpdate(BaseModel):
     skills: List[str] = Field(..., min_items=1)
 
 class HighlightsUpdate(BaseModel):
     highlights: List[str] = Field(..., min_items=1)
 
-# Resume Models
 class Resume(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     personal_info: PersonalInfo
@@ -101,7 +96,6 @@ class Resume(BaseModel):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
-# Contact Models
 class ContactMessage(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str = Field(..., min_length=1, max_length=100)
@@ -120,12 +114,11 @@ class ContactMessageCreate(BaseModel):
     message: str = Field(..., min_length=1)
     recipient_email: Optional[EmailStr] = Field(default="kclynch@uh.edu")
 
-# User Models (for authentication)
 class User(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     username: str = Field(..., min_length=3, max_length=50)
     email: EmailStr
-    password_hash: str
+    hashed_password: str
     role: str = Field(default="admin")
     last_login: Optional[datetime] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
@@ -141,7 +134,6 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     username: Optional[str] = None
 
-# Response Models
 class SuccessResponse(BaseModel):
     success: bool = True
     message: str = "Operation completed successfully"
