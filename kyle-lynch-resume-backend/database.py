@@ -1,234 +1,341 @@
-from motor.motor_asyncio import AsyncIOMotorClient
-from typing import Optional
-import os
-from models import Resume, Experience, Education, ContactMessage, User
+import aiosqlite
+import json
+from typing import Optional, List
+from pathlib import Path
 from datetime import datetime
+import uuid
 
-# Database configuration
-mongo_url = os.environ.get('MONGO_URL')
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ.get('DB_NAME', 'resume_db')]
+DB_PATH = Path(__file__).parent / "resume.db"
 
-# Collections
-resumes_collection = db.resumes
-contacts_collection = db.contact_messages
-users_collection = db.users
+async def init_db():
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS resumes (
+                id TEXT PRIMARY KEY,
+                data TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+        """)
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS contact_messages (
+                id TEXT PRIMARY KEY,
+                name TEXT NOT NULL,
+                email TEXT NOT NULL,
+                subject TEXT NOT NULL,
+                message TEXT NOT NULL,
+                is_read INTEGER DEFAULT 0,
+                created_at TEXT NOT NULL
+            )
+        """)
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                username TEXT PRIMARY KEY,
+                email TEXT NOT NULL,
+                hashed_password TEXT NOT NULL,
+                role TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                last_login TEXT
+            )
+        """)
+        await db.commit()
 
 class ResumeDatabase:
-    
     @staticmethod
     async def get_resume() -> Optional[dict]:
-        """Get the main resume document"""
-        resume = await resumes_collection.find_one({"active": True})
-        if not resume:
-            # Create default resume if none exists
+        async with aiosqlite.connect(DB_PATH) as db:
+            db.row_factory = aiosqlite.Row
+            cursor = await db.execute("SELECT data FROM resumes WHERE id = 'main'")
+            row = await cursor.fetchone()
+            if row:
+                return json.loads(row['data'])
+            from data.mock import resumeData
             await ResumeDatabase.create_default_resume()
-            resume = await resumes_collection.find_one({"active": True})
-        return resume
+            return resumeData
     
     @staticmethod
     async def create_default_resume():
-        """Create default resume from mock data"""
         from data.mock import resumeData
-        
-        default_resume = {
-            "active": True,
-            "personal_info": resumeData["personalInfo"],
-            "highlights": resumeData["highlights"],
-            "experience": resumeData["experience"],
-            "education": resumeData["education"],
-            "skills": resumeData["skills"],
-            "created_at": datetime.utcnow(),
-            "updated_at": datetime.utcnow()
-        }
-        
-        await resumes_collection.insert_one(default_resume)
+        async with aiosqlite.connect(DB_PATH) as db:
+            await db.execute(
+                "INSERT OR REPLACE INTO resumes (id, data, updated_at) VALUES (?, ?, ?)",
+                ('main', json.dumps(resumeData), datetime.utcnow().isoformat())
+            )
+            await db.commit()
     
     @staticmethod
     async def update_personal_info(personal_info: dict) -> bool:
-        """Update personal information"""
-        # Create update fields with dot notation to merge instead of replace
-        update_fields = {}
-        for key, value in personal_info.items():
-            update_fields[f"personal_info.{key}"] = value
-        
-        update_fields["updated_at"] = datetime.utcnow()
-        
-        result = await resumes_collection.update_one(
-            {"active": True},
-            {"$set": update_fields}
-        )
-        return result.modified_count > 0
+        try:
+            resume = await ResumeDatabase.get_resume()
+            if not resume:
+                return False
+            if 'personal_info' not in resume:
+                resume['personal_info'] = {}
+            resume['personal_info'].update(personal_info)
+            async with aiosqlite.connect(DB_PATH) as db:
+                await db.execute(
+                    "UPDATE resumes SET data = ?, updated_at = ? WHERE id = 'main'",
+                    (json.dumps(resume), datetime.utcnow().isoformat())
+                )
+                await db.commit()
+            return True
+        except:
+            return False
     
     @staticmethod
     async def update_highlights(highlights: list) -> bool:
-        """Update professional highlights"""
-        result = await resumes_collection.update_one(
-            {"active": True},
-            {
-                "$set": {
-                    "highlights": highlights,
-                    "updated_at": datetime.utcnow()
-                }
-            }
-        )
-        return result.modified_count > 0
+        try:
+            resume = await ResumeDatabase.get_resume()
+            if not resume:
+                return False
+            resume['highlights'] = highlights
+            async with aiosqlite.connect(DB_PATH) as db:
+                await db.execute(
+                    "UPDATE resumes SET data = ?, updated_at = ? WHERE id = 'main'",
+                    (json.dumps(resume), datetime.utcnow().isoformat())
+                )
+                await db.commit()
+            return True
+        except:
+            return False
     
     @staticmethod
     async def update_skills(skills: list) -> bool:
-        """Update skills list"""
-        result = await resumes_collection.update_one(
-            {"active": True},
-            {
-                "$set": {
-                    "skills": skills,
-                    "updated_at": datetime.utcnow()
-                }
-            }
-        )
-        return result.modified_count > 0
+        try:
+            resume = await ResumeDatabase.get_resume()
+            if not resume:
+                return False
+            resume['skills'] = skills
+            async with aiosqlite.connect(DB_PATH) as db:
+                await db.execute(
+                    "UPDATE resumes SET data = ?, updated_at = ? WHERE id = 'main'",
+                    (json.dumps(resume), datetime.utcnow().isoformat())
+                )
+                await db.commit()
+            return True
+        except:
+            return False
     
     @staticmethod
-    async def get_experiences() -> list:
-        """Get all work experiences"""
+    async def get_experiences() -> List[dict]:
         resume = await ResumeDatabase.get_resume()
-        return resume.get("experience", []) if resume else []
+        return resume.get('experience', []) if resume else []
     
     @staticmethod
     async def add_experience(experience: dict) -> bool:
-        """Add new work experience"""
-        experience["created_at"] = datetime.utcnow()
-        experience["updated_at"] = datetime.utcnow()
-        
-        result = await resumes_collection.update_one(
-            {"active": True},
-            {
-                "$push": {"experience": experience},
-                "$set": {"updated_at": datetime.utcnow()}
-            }
-        )
-        return result.modified_count > 0
+        try:
+            resume = await ResumeDatabase.get_resume()
+            if not resume:
+                return False
+            if 'experience' not in resume:
+                resume['experience'] = []
+            resume['experience'].append(experience)
+            async with aiosqlite.connect(DB_PATH) as db:
+                await db.execute(
+                    "UPDATE resumes SET data = ?, updated_at = ? WHERE id = 'main'",
+                    (json.dumps(resume), datetime.utcnow().isoformat())
+                )
+                await db.commit()
+            return True
+        except:
+            return False
     
     @staticmethod
-    async def update_experience(exp_id: str, experience: dict) -> bool:
-        """Update existing work experience"""
-        experience["updated_at"] = datetime.utcnow()
-        
-        result = await resumes_collection.update_one(
-            {"active": True, "experience.id": exp_id},
-            {
-                "$set": {
-                    **{f"experience.$.{k}": v for k, v in experience.items()},
-                    "updated_at": datetime.utcnow()
-                }
-            }
-        )
-        return result.modified_count > 0
+    async def update_experience(exp_id: str, update_data: dict) -> bool:
+        try:
+            resume = await ResumeDatabase.get_resume()
+            if not resume or 'experience' not in resume:
+                return False
+            for exp in resume['experience']:
+                if exp.get('id') == exp_id:
+                    exp.update(update_data)
+                    exp['updated_at'] = datetime.utcnow().isoformat()
+                    async with aiosqlite.connect(DB_PATH) as db:
+                        await db.execute(
+                            "UPDATE resumes SET data = ?, updated_at = ? WHERE id = 'main'",
+                            (json.dumps(resume), datetime.utcnow().isoformat())
+                        )
+                        await db.commit()
+                    return True
+            return False
+        except:
+            return False
     
     @staticmethod
     async def delete_experience(exp_id: str) -> bool:
-        """Remove work experience"""
-        result = await resumes_collection.update_one(
-            {"active": True},
-            {
-                "$pull": {"experience": {"id": exp_id}},
-                "$set": {"updated_at": datetime.utcnow()}
-            }
-        )
-        return result.modified_count > 0
+        try:
+            resume = await ResumeDatabase.get_resume()
+            if not resume or 'experience' not in resume:
+                return False
+            original_count = len(resume['experience'])
+            resume['experience'] = [exp for exp in resume['experience'] if exp.get('id') != exp_id]
+            if len(resume['experience']) == original_count:
+                return False
+            async with aiosqlite.connect(DB_PATH) as db:
+                await db.execute(
+                    "UPDATE resumes SET data = ?, updated_at = ? WHERE id = 'main'",
+                    (json.dumps(resume), datetime.utcnow().isoformat())
+                )
+                await db.commit()
+            return True
+        except:
+            return False
     
     @staticmethod
-    async def get_education() -> list:
-        """Get all education entries"""
+    async def get_education() -> List[dict]:
         resume = await ResumeDatabase.get_resume()
-        return resume.get("education", []) if resume else []
+        return resume.get('education', []) if resume else []
     
     @staticmethod
     async def add_education(education: dict) -> bool:
-        """Add new education entry"""
-        result = await resumes_collection.update_one(
-            {"active": True},
-            {
-                "$push": {"education": education},
-                "$set": {"updated_at": datetime.utcnow()}
-            }
-        )
-        return result.modified_count > 0
+        try:
+            resume = await ResumeDatabase.get_resume()
+            if not resume:
+                return False
+            if 'education' not in resume:
+                resume['education'] = []
+            resume['education'].append(education)
+            async with aiosqlite.connect(DB_PATH) as db:
+                await db.execute(
+                    "UPDATE resumes SET data = ?, updated_at = ? WHERE id = 'main'",
+                    (json.dumps(resume), datetime.utcnow().isoformat())
+                )
+                await db.commit()
+            return True
+        except:
+            return False
     
     @staticmethod
-    async def update_education(edu_id: str, education: dict) -> bool:
-        """Update existing education entry"""
-        result = await resumes_collection.update_one(
-            {"active": True, "education.id": edu_id},
-            {
-                "$set": {
-                    **{f"education.$.{k}": v for k, v in education.items()},
-                    "updated_at": datetime.utcnow()
-                }
-            }
-        )
-        return result.modified_count > 0
+    async def update_education(edu_id: str, update_data: dict) -> bool:
+        try:
+            resume = await ResumeDatabase.get_resume()
+            if not resume or 'education' not in resume:
+                return False
+            for edu in resume['education']:
+                if edu.get('id') == edu_id:
+                    edu.update(update_data)
+                    edu['updated_at'] = datetime.utcnow().isoformat()
+                    async with aiosqlite.connect(DB_PATH) as db:
+                        await db.execute(
+                            "UPDATE resumes SET data = ?, updated_at = ? WHERE id = 'main'",
+                            (json.dumps(resume), datetime.utcnow().isoformat())
+                        )
+                        await db.commit()
+                    return True
+            return False
+        except:
+            return False
     
     @staticmethod
     async def delete_education(edu_id: str) -> bool:
-        """Remove education entry"""
-        result = await resumes_collection.update_one(
-            {"active": True},
-            {
-                "$pull": {"education": {"id": edu_id}},
-                "$set": {"updated_at": datetime.utcnow()}
-            }
-        )
-        return result.modified_count > 0
+        try:
+            resume = await ResumeDatabase.get_resume()
+            if not resume or 'education' not in resume:
+                return False
+            original_count = len(resume['education'])
+            resume['education'] = [edu for edu in resume['education'] if edu.get('id') != edu_id]
+            if len(resume['education']) == original_count:
+                return False
+            async with aiosqlite.connect(DB_PATH) as db:
+                await db.execute(
+                    "UPDATE resumes SET data = ?, updated_at = ? WHERE id = 'main'",
+                    (json.dumps(resume), datetime.utcnow().isoformat())
+                )
+                await db.commit()
+            return True
+        except:
+            return False
 
 class ContactDatabase:
+    @staticmethod
+    async def save_contact_message(message_data: dict) -> str:
+        message_id = message_data.get('id', str(uuid.uuid4()))
+        async with aiosqlite.connect(DB_PATH) as db:
+            await db.execute("""
+                INSERT INTO contact_messages 
+                (id, name, email, subject, message, is_read, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (
+                message_id,
+                message_data['name'],
+                message_data['email'],
+                message_data['subject'],
+                message_data['message'],
+                0,
+                message_data.get('created_at', datetime.utcnow().isoformat())
+            ))
+            await db.commit()
+        return message_id
     
     @staticmethod
-    async def save_contact_message(message: dict) -> str:
-        """Save contact form message"""
-        message["created_at"] = datetime.utcnow()
-        result = await contacts_collection.insert_one(message)
-        return str(result.inserted_id)
-    
-    @staticmethod
-    async def get_contact_messages(limit: int = 50) -> list:
-        """Get recent contact messages"""
-        cursor = contacts_collection.find().sort("created_at", -1).limit(limit)
-        messages = []
-        async for doc in cursor:
-            doc["_id"] = str(doc["_id"])
-            messages.append(doc)
-        return messages
+    async def get_contact_messages(limit: int = 50) -> List[dict]:
+        async with aiosqlite.connect(DB_PATH) as db:
+            db.row_factory = aiosqlite.Row
+            cursor = await db.execute("""
+                SELECT * FROM contact_messages 
+                ORDER BY created_at DESC 
+                LIMIT ?
+            """, (limit,))
+            rows = await cursor.fetchall()
+            messages = []
+            for row in rows:
+                messages.append({
+                    'id': row['id'],
+                    'name': row['name'],
+                    'email': row['email'],
+                    'subject': row['subject'],
+                    'message': row['message'],
+                    'is_read': bool(row['is_read']),
+                    'created_at': row['created_at']
+                })
+            return messages
     
     @staticmethod
     async def mark_message_as_read(message_id: str) -> bool:
-        """Mark message as read"""
-        from bson import ObjectId
-        result = await contacts_collection.update_one(
-            {"_id": ObjectId(message_id)},
-            {"$set": {"status": "read"}}
-        )
-        return result.modified_count > 0
+        async with aiosqlite.connect(DB_PATH) as db:
+            await db.execute(
+                "UPDATE contact_messages SET is_read = 1 WHERE id = ?",
+                (message_id,)
+            )
+            await db.commit()
+            return True
 
 class UserDatabase:
-    
     @staticmethod
     async def get_user_by_username(username: str) -> Optional[dict]:
-        """Get user by username"""
-        return await users_collection.find_one({"username": username})
+        async with aiosqlite.connect(DB_PATH) as db:
+            db.row_factory = aiosqlite.Row
+            cursor = await db.execute(
+                "SELECT * FROM users WHERE username = ?",
+                (username,)
+            )
+            row = await cursor.fetchone()
+            if row:
+                return dict(row)
+            return None
     
     @staticmethod
-    async def create_user(user: dict) -> str:
-        """Create new user"""
-        user["created_at"] = datetime.utcnow()
-        result = await users_collection.insert_one(user)
-        return str(result.inserted_id)
+    async def create_user(user_data: dict) -> bool:
+        async with aiosqlite.connect(DB_PATH) as db:
+            await db.execute("""
+                INSERT INTO users (username, email, hashed_password, role, created_at, last_login)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                user_data['username'],
+                user_data['email'],
+                user_data['hashed_password'],
+                user_data['role'],
+                user_data.get('created_at', datetime.utcnow().isoformat()),
+                user_data.get('last_login')
+            ))
+            await db.commit()
+        return True
     
     @staticmethod
     async def update_last_login(username: str) -> bool:
-        """Update user's last login time"""
-        result = await users_collection.update_one(
-            {"username": username},
-            {"$set": {"last_login": datetime.utcnow()}}
-        )
-        return result.modified_count > 0
+        async with aiosqlite.connect(DB_PATH) as db:
+            await db.execute(
+                "UPDATE users SET last_login = ? WHERE username = ?",
+                (datetime.utcnow().isoformat(), username)
+            )
+            await db.commit()
+        return True
